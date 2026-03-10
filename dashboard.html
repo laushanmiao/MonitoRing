@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MonitoRing Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #B85450;
+      --primary-light: #D4736F;
+      --primary-dark: #8B3D3A;
+      --primary-bg: #FDF2F2;
+      --accent: #E8A5A3;
+      --text-dark: #4A2C2A;
+      --text-light: #7D5856;
+      --white: #FFFFFF;
+      --gray-light: #F8E8E8;
+      --gray: #E5D0D0;
+      --success: #4CAF50;
+      --warning: #FF9800;
+      --danger: #F44336;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--primary-bg) 0%, var(--white) 100%);
+      min-height: 100vh;
+      color: var(--text-dark);
+    }
+
+    /* Header */
+    .header {
+      background: var(--white);
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 15px rgba(184, 84, 80, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      height: 50px;
+      width: auto;
+    }
+
+    .header-title {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .connection-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-online {
+      background: rgba(76, 175, 80, 0.1);
+      color: var(--success);
+    }
+
+    .status-online .status-dot {
+      background: var(--success);
+    }
+
+    .status-offline {
+      background: rgba(244, 67, 54, 0.1);
+      color: var(--danger);
+    }
+
+    .status-offline .status-dot {
+      background: var(--danger);
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* Alert Banner */
+    .alert-banner {
+      background: linear-gradient(135deg, var(--warning) 0%, #FFB74D 100%);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      display: none;
+      align-items: center;
+      gap: 15px;
+      animation: slideIn 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+    }
+
+    .alert-banner.active {
+      display: flex;
+    }
+
+    .alert-icon {
+      font-size: 2em;
+      animation: shake 0.5s infinite;
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      25% {
+        transform: rotate(-10deg);
+      }
+
+      75% {
+        transform: rotate(10deg);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(184, 84, 80, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid var(--gray-light);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(184, 84, 80, 0.15);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+    }
+
+    .card-icon.temp {
+      background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+    }
+
+    .card-icon.humidity {
+      background: linear-gradient(135deg, #4ECDC4 0%, #7EDDD6 100%);
+    }
+
+    .card-icon.gas {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    }
+
+    .card-icon.motion {
+      background: linear-gradient(135deg, #9B59B6 0%, #B07CC6 100%);
+    }
+
+    .card-label {
+      font-size: 0.9em;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .card-value {
+      font-size: 2.8em;
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1.2;
+    }
+
+    .card-unit {
+      font-size: 0.4em;
+      font-weight: 400;
+      color: var(--text-light);
+      margin-left: 5px;
+    }
+
+    .card-footer {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid var(--gray-light);
+    }
+
+    /* Gas Quality Badge */
+    .quality-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+
+    .quality-1 {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .quality-2 {
+      background: #F1F8E9;
+      color: #558B2F;
+    }
+
+    .quality-3 {
+      background: #FFF8E1;
+      color: #F9A825;
+    }
+
+    .quality-4 {
+      background: #FFF3E0;
+      color: #EF6C00;
+    }
+
+    .quality-5 {
+      background: #FFEBEE;
+      color: #C62828;
+    }
+
+    /* Motion Status */
+    .motion-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+
+    .motion-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--gray);
+    }
+
+    .motion-indicator.active {
+      background: var(--warning);
+      animation: pulse 0.5s infinite;
+    }
+
+    /* History Section */
+    .history-section {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(184, 84, 80, 0.08);
+      border: 1px solid var(--gray-light);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 1.3em;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .refresh-info {
+      font-size: 0.85em;
+      color: var(--text-light);
+    }
+
+    /* Table */
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+    }
+
+    .history-table th {
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-weight: 600;
+      padding: 14px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .history-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--gray-light);
+      color: var(--text-dark);
+    }
+
+    .history-table tbody tr:hover {
+      background: var(--primary-bg);
+    }
+
+    .history-table .motion-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .motion-badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8em;
+      font-weight: 500;
+    }
+
+    .motion-yes {
+      background: #FFF3E0;
+      color: #EF6C00;
+    }
+
+    .motion-no {
+      background: var(--gray-light);
+      color: var(--text-light);
+    }
+
+    /* Config Section */
+    .config-section {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 20px 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 20px rgba(184, 84, 80, 0.08);
+      border: 1px solid var(--gray-light);
+    }
+
+    .config-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .config-label {
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    .config-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 15px;
+      border: 2px solid var(--gray);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95em;
+      transition: border-color 0.3s ease;
+    }
+
+    .config-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.95em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(184, 84, 80, 0.3);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-light);
+      font-size: 0.85em;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .history-table {
+        font-size: 0.8em;
+      }
+
+      .history-table th,
+      .history-table td {
+        padding: 10px 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="logo-section">
+      <img src="https://i.postimg.cc/28dpvMgk/Screenshot-2026-01-07-230002.png" alt="MonitoRing Logo" class="logo">
+      <span class="header-title">Dashboard</span>
+    </div>
+    <div id="connectionStatus" class="connection-status status-offline">
+      <span class="status-dot"></span>
+      <span>Connecting...</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Alert Banner -->
+    <div id="alertBanner" class="alert-banner">
+      <span class="alert-icon">🚨</span>
+      <div>
+        <strong>Motion Detected!</strong>
+        <p>Intruder alert in monitored area</p>
+      </div>
+    </div>
+
+    <!-- ESP32 IP Configuration -->
+    <div class="config-section">
+      <div class="config-row">
+        <label class="config-label">ESP32 IP Address:</label>
+        <input type="text" id="esp32Ip" class="config-input" placeholder="e.g., 192.168.1.100" value="">
+        <button class="btn btn-primary" onclick="connectToESP32()">Connect</button>
+      </div>
+    </div>
+
+    <!-- Sensor Cards -->
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Temperature</span>
+          <div class="card-icon temp">🌡️</div>
+        </div>
+        <div class="card-value" id="temperature">--<span class="card-unit">°C</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Humidity</span>
+          <div class="card-icon humidity">💧</div>
+        </div>
+        <div class="card-value" id="humidity">--<span class="card-unit">%</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Gas Level</span>
+          <div class="card-icon gas">💨</div>
+        </div>
+        <div class="card-value" id="gasPPM">--<span class="card-unit">PPM</span></div>
+        <div class="card-footer">
+          <span class="quality-badge quality-1" id="gasQuality">--</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">Motion Detection</span>
+          <div class="card-icon motion">👁️</div>
+        </div>
+        <div class="motion-status">
+          <span class="motion-indicator" id="motionIndicator"></span>
+          <span id="motionText">No Motion</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Section -->
+    <div class="history-section">
+      <div class="section-header">
+        <h2 class="section-title">📊 History (Last 30 Readings)</h2>
+        <span class="refresh-info">Auto-refreshes every 5 seconds</span>
+      </div>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Temperature</th>
+            <th>Humidity</th>
+            <th>Gas (PPM)</th>
+            <th>Quality</th>
+            <th>Motion</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-light);">
+              Enter ESP32 IP address and click Connect
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>MonitoRing © 2026 - Environment Monitoring System</p>
+  </footer>
+
+  <script>
+    const qualityLabels = ['', 'Excellent', 'Good', 'Moderate', 'Poor', 'Hazardous'];
+    let esp32BaseUrl = '';
+    let refreshInterval = null;
+
+    function connectToESP32() {
+      const ip = document.getElementById('esp32Ip').value.trim();
+      if (!ip) {
+        alert('Please enter the ESP32 IP address');
+        return;
+      }
+
+      esp32BaseUrl = `http://${ip}`;
+
+      // Clear any existing interval
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+
+      // Start fetching data
+      fetchData();
+      refreshInterval = setInterval(fetchData, 5000);
+    }
+
+    async function fetchData() {
+      if (!esp32BaseUrl) return;
+
+      try {
+        const response = await fetch(`${esp32BaseUrl}/data`);
+        const data = await response.json();
+
+        // Update connection status
+        updateConnectionStatus(true);
+
+        // Update sensor values
+        document.getElementById('temperature').innerHTML =
+          `${data.temperature.toFixed(1)}<span class="card-unit">°C</span>`;
+        document.getElementById('humidity').innerHTML =
+          `${data.humidity.toFixed(1)}<span class="card-unit">%</span>`;
+        document.getElementById('gasPPM').innerHTML =
+          `${data.gasPPM}<span class="card-unit">PPM</span>`;
+
+        // Update gas quality badge
+        const qualityEl = document.getElementById('gasQuality');
+        qualityEl.textContent = qualityLabels[data.gasCondition];
+        qualityEl.className = `quality-badge quality-${data.gasCondition}`;
+
+        // Update motion status
+        const motionIndicator = document.getElementById('motionIndicator');
+        const motionText = document.getElementById('motionText');
+        const alertBanner = document.getElementById('alertBanner');
+
+        if (data.motion) {
+          motionIndicator.classList.add('active');
+          motionText.textContent = 'Motion Detected!';
+          alertBanner.classList.add('active');
+        } else {
+          motionIndicator.classList.remove('active');
+          motionText.textContent = 'No Motion';
+          alertBanner.classList.remove('active');
+        }
+
+        // Update history table
+        updateHistoryTable(data.history);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        updateConnectionStatus(false);
+      }
+    }
+
+    function updateConnectionStatus(connected) {
+      const statusEl = document.getElementById('connectionStatus');
+      if (connected) {
+        statusEl.className = 'connection-status status-online';
+        statusEl.innerHTML = '<span class="status-dot"></span><span>Connected</span>';
+      } else {
+        statusEl.className = 'connection-status status-offline';
+        statusEl.innerHTML = '<span class="status-dot"></span><span>Disconnected</span>';
+      }
+    }
+
+    function updateHistoryTable(history) {
+      const tbody = document.getElementById('historyTableBody');
+
+      if (!history || history.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-light);">
+              No data yet
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // Show newest first with Malaysia time
+      const reversed = [...history].reverse();
+
+      // Calculate Malaysia time for each reading (based on index, 5 sec intervals)
+      const now = new Date();
+
+      tbody.innerHTML = reversed.map((row, index) => {
+        // Calculate timestamp: newest reading is now, older readings are 5 seconds apart
+        const readingTime = new Date(now.getTime() - (index * 5000));
+        const malaysiaTime = readingTime.toLocaleTimeString('en-MY', {
+          timeZone: 'Asia/Kuala_Lumpur',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true
+        });
+
+        return `
+          <tr>
+            <td>${malaysiaTime}</td>
+            <td>${row.temp.toFixed(1)}°C</td>
+            <td>${row.hum.toFixed(1)}%</td>
+            <td>${row.gas}</td>
+            <td><span class="quality-badge quality-${row.cond}">${qualityLabels[row.cond]}</span></td>
+            <td>
+              <span class="motion-badge ${row.motion ? 'motion-yes' : 'motion-no'}">
+                ${row.motion ? '⚠️ Yes' : 'No'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Update last refresh time
+      const refreshInfo = document.querySelector('.refresh-info');
+      const lastUpdate = now.toLocaleTimeString('en-MY', {
+        timeZone: 'Asia/Kuala_Lumpur',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+      refreshInfo.textContent = `Last updated: ${lastUpdate} (MYT)`;
+    }
+
+    // Check for saved IP in localStorage
+    window.onload = function () {
+      const savedIp = localStorage.getItem('esp32Ip');
+      if (savedIp) {
+        document.getElementById('esp32Ip').value = savedIp;
+      }
+    };
+
+    // Save IP when connecting
+    const originalConnect = connectToESP32;
+    connectToESP32 = function () {
+      const ip = document.getElementById('esp32Ip').value.trim();
+      if (ip) {
+        localStorage.setItem('esp32Ip', ip);
+      }
+      originalConnect();
+    };
+  </script>
+</body>
+
+</html>
