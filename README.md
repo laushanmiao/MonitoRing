@@ -21,20 +21,16 @@ Neglected areas are prone to environmental hazards and wildlife intrusion. **Mon
 
 ## 🛠️ Hardware Requirements
 
-* 
-**Microcontroller**: ESP32 Dev Kit V1 
+* **Microcontroller**: ESP32 Dev Kit V1 
 
 
-* 
-**Climate Sensor**: DHT11 (Temperature & Humidity) 
+* **Climate Sensor**: DHT11 (Temperature & Humidity) 
 
 
-* 
-**Gas Sensor**: MQ135 (Air Quality/PPM) 
+* **Gas Sensor**: MQ135 (Air Quality/PPM) 
 
 
-* 
-**Motion Sensor**: RCWL-0516 (Microwave Radar) 
+* **Motion Sensor**: RCWL-0516 (Microwave Radar) 
 
 
 * **Indicators**: Piezo Buzzer & White LED
