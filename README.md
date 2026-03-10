@@ -13,16 +13,8 @@ Neglected areas are prone to environmental hazards and wildlife intrusion. **Mon
 * **4-in-1 Monitoring**: Real-time tracking of Temperature, Humidity, Gas Levels (PPM), and Motion.
 * **Humane Wildlife Deterrence**: Uses a **RCWL-0516** microwave radar sensor to detect living beings and triggers a piezo buzzer and white LED to safely chase them away.
 * **Dual Dashboards**:
-* 
 **Local Web Server**: A sleek, responsive dashboard hosted directly on the ESP32.
-
-
-* 
 **Google Sheets Integration**: Automatically logs sensor data every 5 seconds for long-term history and analysis.
-
-
-
-
 * **Connectivity**: Powered by the **ESP32 Dev Kit V1** using WiFi for remote access.
 
 ---
@@ -64,16 +56,13 @@ To log data, you must deploy a Google Apps Script as a web app:
 
 Update the following constants in `arduinocoding.ino`:
 
-* 
-`ssid`: Your WiFi name.
+* `ssid`: Your WiFi name.
 
 
-* 
-`password`: Your WiFi password.
+* `password`: Your WiFi password.
 
 
-* 
-`googleScriptURL`: Your deployed Google Script URL.
+* `googleScriptURL`: Your deployed Google Script URL.
 
 
 
@@ -90,9 +79,6 @@ Update the following constants in `arduinocoding.ino`:
 | 3 | 201 - 400 | Moderate |
 | 4 | 401 - 600 | Poor |
 | 5 | > 600 | Hazardous |
-| <br>(Source: )
-
- |  |  |
 
 ---
 
